@@ -49,9 +49,11 @@ public class SettingsFragment extends Fragment {
                                     }
                                 }
                             });
+//                    mEmailEntry.setText(user.getEmail());
                 } else {
                     Toast.makeText(getActivity(), "Email is the same!", Toast.LENGTH_SHORT).show();
                 }
+
             }
         });
 //        user.updatePassword(newPassword.getText().toString().trim())
