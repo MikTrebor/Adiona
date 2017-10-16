@@ -102,5 +102,12 @@
     <string name="email_settings">Email Settings</string>
     <string name="settings_notif_1">Get a notification when a trackee leaves the house</string>
     <string name="settings_notif_2">Get a notification when a trackee hasn\'t moved for</string>
+    <string name="change_password">Change Password</string>
+    <string name="current_password">Old Password</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_password">Confirm New Password</string>
+    <string name="current_email">Current Email</string>
+    <string name="new_email">New Email</string>
+    <string name="confirm_email">Confirm New Email</string>
 
 </resources>
