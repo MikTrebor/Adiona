@@ -9,13 +9,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     Fragment trackeesFragment = new TrackeesFragment();
-    Fragment mapFragment = new MapFragment();
+    Fragment customMapFragment = new CustomMapFragment();
+    Fragment mMapFragment = MapFragment.newInstance();
     Fragment smartHomeFragment = new SmartHomeFragment();
     Fragment settingsFragment = new SettingsFragment();
     FragmentManager fragmentManager = getFragmentManager();
@@ -33,7 +39,8 @@ public class MainActivity extends AppCompatActivity {
                     //mTextMessage.setText(R.string.title_trackees);
                     return true;
                 case R.id.navigation_map:
-                    fragmentManager.beginTransaction().replace(R.id.content, mapFragment).commit();
+                    fragmentManager.beginTransaction().replace(R.id.content, customMapFragment).commit();
+                    // fragmentManager.beginTransaction().replace(R.id.content, mMapFragment).commit();
                     //mTextMessage.setText(R.string.title_map);
                     return true;
                 case R.id.navigation_smarthome:
@@ -50,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
 
     };
 
+    //MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
+    // mapFragment.getMapAsync(this);
     @Override
     public void onStart() {
         super.onStart();
@@ -67,8 +76,15 @@ public class MainActivity extends AppCompatActivity {
 //        mDebugMessage = (TextView) findViewById(R.id.debug);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
     }
 
+    @Override
+    public void onMapReady(GoogleMap map) {
+        map.addMarker(new MarkerOptions()
+                .position(new LatLng(0, 0))
+                .title("Marker"));
+    }
     private void updateUI(FirebaseUser user) {
 //        hideProgressDialog();
         if (user != null) {

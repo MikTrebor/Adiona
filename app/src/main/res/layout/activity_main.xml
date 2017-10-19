@@ -13,7 +13,11 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
-
+        <!--<fragment xmlns:android="http://schemas.android.com/apk/res/android"-->
+        <!--android:name="com.google.android.gms.maps.MapFragment"-->
+        <!--android:id="@+id/map"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"/>-->
         <!--<fragment-->
         <!--android:id="@+id/trackees_fragment"-->
         <!--android:name="com.srp.rkim.seniorresearchproject.TrackeesFragment"-->
@@ -22,7 +26,7 @@
 
         <!--<fragment-->
         <!--android:id="@+id/map_fragment"-->
-        <!--android:name="com.srp.rkim.seniorresearchproject.MapFragment"-->
+        <!--android:name="com.srp.rkim.seniorresearchproject.CustomMapFragmentagment"-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="match_parent" />-->
 
