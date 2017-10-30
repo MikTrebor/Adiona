@@ -109,5 +109,11 @@
     <string name="current_email">Current Email</string>
     <string name="new_email">New Email</string>
     <string name="confirm_email">Confirm New Email</string>
-
+    <string name="master_button_text">Use as a Master Account</string>
+    <string name="trackee_button_text">Use as a Trackee Account</string>
+    <string name="title_activity_trackee_main">TrackeeMainActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="refresh">Refresh</string>
 </resources>

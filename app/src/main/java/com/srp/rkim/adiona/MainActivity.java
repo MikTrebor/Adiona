@@ -1,4 +1,4 @@
-package com.srp.rkim.seniorresearchproject;
+package com.srp.rkim.adiona;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -16,6 +16,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private TextView mTextMessage;
     private TextView mDebugMessage;
     private FirebaseAuth mAuth;
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -72,6 +74,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
+
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        // DatabaseReference myRef = database.getReference("users");
+
+
 //        mTextMessage = (TextView) findViewById(R.id.message);
 //        mDebugMessage = (TextView) findViewById(R.id.debug);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);

@@ -1,4 +1,4 @@
-package com.srp.rkim.seniorresearchproject;
+package com.srp.rkim.adiona;
 /**
  * Copyright 2016 Google Inc. All Rights Reserved.
  * <p>
@@ -31,6 +31,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class EmailPasswordActivity extends BaseActivity implements
         View.OnClickListener {
@@ -41,7 +46,6 @@ public class EmailPasswordActivity extends BaseActivity implements
     private TextView mDetailTextView;
     private EditText mEmailField;
     private EditText mPasswordField;
-
     // [START declare_auth]
     private FirebaseAuth mAuth;
     // [END declare_auth]
@@ -73,8 +77,26 @@ public class EmailPasswordActivity extends BaseActivity implements
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        updateUI(currentUser);
+        final FirebaseUser currentUser = mAuth.getCurrentUser();
+        FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = mDatabase.getReference();
+
+        myRef.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (snapshot.hasChild(currentUser.getUid())) {
+                    // run some code
+                    updateUI(currentUser);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
     }
     // [END on_start_check_user]
 
@@ -95,6 +117,11 @@ public class EmailPasswordActivity extends BaseActivity implements
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+
+                            FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+                            DatabaseReference myRef = mDatabase.getReference();
+                            myRef.child("users").child(user.getUid()).setValue(user);
+                            myRef.child("users").child(user.getUid()).child("type").setValue("");
                             updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -211,7 +238,7 @@ public class EmailPasswordActivity extends BaseActivity implements
     private void updateUI(FirebaseUser user) {
         hideProgressDialog();
         if (user != null) {
-            Intent intent = new Intent(getBaseContext(), MainActivity.class);
+            Intent intent = new Intent(getBaseContext(), SwitchActivity.class);
 //            intent.putExtra("UID", user.getUid());
             startActivity(intent);
 

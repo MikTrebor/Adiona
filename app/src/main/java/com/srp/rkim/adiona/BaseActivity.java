@@ -1,4 +1,4 @@
-package com.srp.rkim.seniorresearchproject;
+package com.srp.rkim.adiona;
 
 import android.app.ProgressDialog;
 import android.support.annotation.VisibleForTesting;
