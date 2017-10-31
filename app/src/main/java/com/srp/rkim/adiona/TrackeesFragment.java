@@ -12,6 +12,10 @@ public class TrackeesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+//        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss:S");
+//        String result = sdf.format();
+//        System.out.println(result);
+
         return inflater.inflate(R.layout.fragment_trackees, container, false);
     }
 }

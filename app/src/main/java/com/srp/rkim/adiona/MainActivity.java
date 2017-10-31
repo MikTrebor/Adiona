@@ -2,6 +2,7 @@ package com.srp.rkim.adiona;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -74,6 +75,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
+
+        Intent intent = new Intent(getApplicationContext(), MyService.class);
+        // stopService(intent);
 
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();

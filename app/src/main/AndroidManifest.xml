@@ -37,7 +37,9 @@
         <activity android:name="com.srp.rkim.adiona.SwitchActivity" />
         <activity
             android:name="com.srp.rkim.adiona.TrackeeMainActivity"
-            android:label="@string/title_activity_trackee_main"></activity>
+            android:label="@string/title_activity_trackee_main" />
+
+        <service android:name=".MyService" />
     </application>
 
 </manifest>
