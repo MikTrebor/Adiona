@@ -117,4 +117,6 @@
     <string name="title_notifications">Notifications</string>
     <string name="refresh">Refresh</string>
     <string name="add_trackee">Add Trackee</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
 </resources>

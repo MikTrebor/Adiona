@@ -17,6 +17,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class SwitchActivity extends AppCompatActivity {
+    private static final String TAG = "SwitchActivity";
+
     private Button mMasterButton;
     private Button mTrackeeButton;
     private FirebaseAuth mAuth;
@@ -27,8 +29,8 @@ public class SwitchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_switch);
         final Context context = this;
-        mMasterButton = (Button) findViewById(R.id.choose_master_button);
-        mTrackeeButton = (Button) findViewById(R.id.choose_trackee_button);
+        mMasterButton = findViewById(R.id.choose_master_button);
+        mTrackeeButton = findViewById(R.id.choose_trackee_button);
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
@@ -41,7 +43,7 @@ public class SwitchActivity extends AppCompatActivity {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
                 String value = dataSnapshot.getValue(String.class);
-                Log.d("here", "Value is: " + value);
+                Log.d(TAG, "Value is: " + value);
 
 
                 if (value.equals("master")) {
@@ -78,7 +80,7 @@ public class SwitchActivity extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError error) {
                 // Failed to read value
-                Log.w("here", "Failed to read value.", error.toException());
+                Log.w(TAG, "Failed to read value.", error.toException());
             }
         });
 

@@ -17,7 +17,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.Calendar;
 
 public class MyService extends Service {
-    private static final String TAG = "BOOMBOOMTESTGPS";
+    private static final String TAG = "MyService";
     private static final int LOCATION_INTERVAL = 1000;
     private static final float LOCATION_DISTANCE = 10f;
     LocationListener[] mLocationListeners = new LocationListener[]{
@@ -109,7 +109,7 @@ public class MyService extends Service {
             myRef.child("users").child(user.getUid()).child("location").child("latitude").setValue(location.getLatitude());
             myRef.child("users").child(user.getUid()).child("location").child("longitude").setValue(location.getLongitude());
             myRef.child("users").child(user.getUid()).child("time").setValue(Calendar.getInstance().getTime());
-
+            //myRef.child("users").child(user.getUid()).child("time").setValue(System.currentTimeMillis());
         }
 
         @Override
