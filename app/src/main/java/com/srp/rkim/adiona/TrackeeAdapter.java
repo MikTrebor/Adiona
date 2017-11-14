@@ -53,8 +53,9 @@ public class TrackeeAdapter extends
         // Set item views based on your views and data model
         TextView nameView = viewHolder.nameTextView;
         nameView.setText(trackee.getTrackeeName());
+
         TextView syncView = viewHolder.syncTextView;
-        nameView.setText(trackee.getTime().toString());
+        syncView.setText(trackee.getTime().toString());
 
         Button eButton = viewHolder.editButton;
         Button dButton = viewHolder.deleteButton;

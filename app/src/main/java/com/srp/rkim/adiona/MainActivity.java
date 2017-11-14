@@ -86,8 +86,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 //        mTextMessage = (TextView) findViewById(R.id.message);
 //        mDebugMessage = (TextView) findViewById(R.id.debug);
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        fragmentManager.beginTransaction().replace(R.id.content, trackeesFragment).commit();
 
     }
 
