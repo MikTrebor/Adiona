@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.srp.rkim.adiona.TrackeeMainActivity">
+    tools:context="com.srp.rkim.argus.TrackeeMainActivity">
 
     <FrameLayout
         android:id="@+id/content"
