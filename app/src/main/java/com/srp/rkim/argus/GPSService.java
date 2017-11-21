@@ -16,8 +16,8 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Calendar;
 
-public class MyService extends Service {
-    private static final String TAG = "MyService";
+public class GPSService extends Service {
+    private static final String TAG = "GPSService";
     private static final int LOCATION_INTERVAL = 1000;
     private static final float LOCATION_DISTANCE = 10f;
     LocationListener[] mLocationListeners = new LocationListener[]{

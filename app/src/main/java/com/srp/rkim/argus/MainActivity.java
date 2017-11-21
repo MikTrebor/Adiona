@@ -2,7 +2,9 @@ package com.srp.rkim.argus;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -21,16 +23,18 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
+    private static final int MAP_PERMISSIONS = 1;
     Fragment trackeesFragment = new TrackeesFragment();
     Fragment customMapFragment = new CustomMapFragment();
     Fragment mMapFragment = MapFragment.newInstance();
     Fragment smartHomeFragment = new SmartHomeFragment();
     Fragment settingsFragment = new SettingsFragment();
     FragmentManager fragmentManager = getFragmentManager();
+    Context context;
+    GPSTracker gps;
     private TextView mTextMessage;
     private TextView mDebugMessage;
     private FirebaseAuth mAuth;
-
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -75,7 +79,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
-
+        String[] perms = {"android.permission.ACCESS_COARSE_LOCATION", "android.permission.ACCESS_FINE_LOCATION"};
+        requestPermissions(perms, MAP_PERMISSIONS);
         Intent intent = new Intent(getApplicationContext(), MyService.class);
         // stopService(intent);
 
@@ -92,6 +97,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+    @Override
+    public void onRequestPermissionsResult(int permsRequestCode, String[] permissions, int[] grantResults) {
+
+        switch (permsRequestCode) {
+            case 1:
+                boolean coarseLocationAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                boolean fineLocationAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+                break;
+        }
+    }
     @Override
     public void onMapReady(GoogleMap map) {
         map.addMarker(new MarkerOptions()
