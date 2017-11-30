@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Senior Research Project</string>
+    <string name="app_name">Argus</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>

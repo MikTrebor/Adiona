@@ -56,6 +56,8 @@ public class TrackeeMainActivity extends AppCompatActivity {
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        fragmentManager.beginTransaction().replace(R.id.content, smartHomeFragment).commit();
+
     }
 
     @Override

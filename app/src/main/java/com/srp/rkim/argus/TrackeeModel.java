@@ -17,7 +17,8 @@ public class TrackeeModel {
 //    }
 
 
-    public TrackeeModel(String trackeeName, double latitude, double longitude, Date time) {
+    public TrackeeModel(String uid, String trackeeName, double latitude, double longitude, Date time) {
+        this.uid = uid;
         this.trackeeName = trackeeName;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -48,6 +49,9 @@ public class TrackeeModel {
         this.longitude = longitude;
     }
 
+    public String getUID() {
+        return uid;
+    }
     public Date getTime() {
         return time;
     }
@@ -56,5 +60,8 @@ public class TrackeeModel {
         this.time = time;
     }
 
+    public boolean isMatch(String uid) {
+        return uid == this.uid;
+    }
 
 }

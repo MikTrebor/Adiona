@@ -30,9 +30,11 @@ public class TrackeesFragment extends Fragment {
     private FirebaseUser master;
     private ArrayList<TrackeeModel> trackees;
     private ArrayList<String> trackeeUIDs;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
 
         View view = inflater.inflate(R.layout.fragment_trackees, container, false);
 
@@ -41,13 +43,28 @@ public class TrackeesFragment extends Fragment {
         master = masterAuth.getCurrentUser();
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference myRef = mDatabase.getReference();
+        Log.d(TAG, "onCreateView: " + myRef.toString());
 
         trackees = new ArrayList<TrackeeModel>();
+        trackeeUIDs = new ArrayList<String>();
         //  trackees.add(new TrackeeModel("Bob", 111, 112, Calendar.getInstance().getTime()));
 
         final TrackeeAdapter adapter = new TrackeeAdapter(context, trackees);
         rTrackees.setAdapter(adapter);
         rTrackees.setLayoutManager(new LinearLayoutManager(context));
+
+//        myRef.child("users").child(master.getUid()).child("trackees").addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                trackeeUIDs = (ArrayList<String>) dataSnapshot.getValue();
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                Log.w(TAG, "Failed to read value.", databaseError.toException());
+//
+//            }
+//        });
 
 
         myRef.child("users").child(master.getUid()).child("trackees").addValueEventListener(new ValueEventListener() {
@@ -62,11 +79,33 @@ public class TrackeesFragment extends Fragment {
                         public void onDataChange(DataSnapshot inDataSnapshot) {
                             //inDataSnapshot.child("location").getValue();
                             //inDataSnapshot.child("time").getValue();
-
+                            int removeSpot = -1;
+                            for (TrackeeModel t : trackees) {
+                                Log.d(TAG, trackees.size() + "before" + t.getUID());
+                            }
                             //t.add(0, new Contact("Barney", true));
+                            for (int x = 0; x < trackees.size(); x++) {
+                                Log.d(TAG, "first:" + trackees.get(x).getUID());
+                                Log.d(TAG, "second:" + inDataSnapshot.getRef().toString());
 
-                            trackees.add(0, new TrackeeModel((String) inDataSnapshot.child("name").getValue(), (Double) inDataSnapshot.child("location").child("latitude").getValue(), (Double) inDataSnapshot.child("location").child("latitude").getValue(), new Date((long) inDataSnapshot.child("time").child("time").getValue())));
-                            adapter.notifyItemInserted(0);
+                                if (trackees.get(x).getUID().equals(inDataSnapshot.getRef().toString())) {
+                                    trackees.remove(x);
+                                    removeSpot = x;
+                                    for (TrackeeModel t : trackees) {
+                                        Log.d(TAG, "after" + t.getUID());
+                                    }
+                                    Log.d(TAG, "removed for uid: " + inDataSnapshot.getRef().toString());
+                                    Log.d(TAG, "removed at index: " + removeSpot);
+                                }
+                            }
+                            trackees.add(0, new TrackeeModel(inDataSnapshot.getRef().toString(), (String) inDataSnapshot.child("name").getValue(), (Double) inDataSnapshot.child("location").child("latitude").getValue(), (Double) inDataSnapshot.child("location").child("latitude").getValue(), new Date((long) inDataSnapshot.child("time").child("time").getValue())));
+                            Log.d(TAG, "added for uid: " + inDataSnapshot.getRef().toString());
+                            if (removeSpot < 0) {
+//                                adapter.notifyItemRemoved(removeSpot);
+                                removeSpot = -1;
+                            }
+                            adapter.notifyDataSetChanged();
+//                            adapter.notifyItemInserted(0);
 
                         }
 

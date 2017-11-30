@@ -20,6 +20,8 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 
 public class SettingsFragment extends Fragment {
@@ -32,6 +34,7 @@ public class SettingsFragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseUser user;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -40,6 +43,9 @@ public class SettingsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
+        FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+        final DatabaseReference myRef = mDatabase.getReference();
+
         mEmailEntry = view.findViewById(R.id.email_input);
         mEmailEntry.setText(user.getEmail());
         mChangePasswordButton = view.findViewById(R.id.change_password);
@@ -113,6 +119,9 @@ public class SettingsFragment extends Fragment {
                                 @Override
                                 public void onComplete(@NonNull Task task) {
                                     if (task.isSuccessful()) {
+                                        myRef.child("users").child(user.getUid()).child("email").setValue(mEmailEntry.getText().toString());
+
+
                                         Toast.makeText(getActivity(), "Email address is updated.", Toast.LENGTH_SHORT).show();
                                     } else {
                                         Toast.makeText(getActivity(), "Failed to update email!", Toast.LENGTH_SHORT).show();
