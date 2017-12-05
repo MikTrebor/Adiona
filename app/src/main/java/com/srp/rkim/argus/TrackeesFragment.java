@@ -79,7 +79,6 @@ public class TrackeesFragment extends Fragment {
                         public void onDataChange(DataSnapshot inDataSnapshot) {
                             //inDataSnapshot.child("location").getValue();
                             //inDataSnapshot.child("time").getValue();
-                            int removeSpot = -1;
                             for (TrackeeModel t : trackees) {
                                 Log.d(TAG, trackees.size() + "before" + t.getUID());
                             }
@@ -90,20 +89,15 @@ public class TrackeesFragment extends Fragment {
 
                                 if (trackees.get(x).getUID().equals(inDataSnapshot.getRef().toString())) {
                                     trackees.remove(x);
-                                    removeSpot = x;
                                     for (TrackeeModel t : trackees) {
                                         Log.d(TAG, "after" + t.getUID());
                                     }
                                     Log.d(TAG, "removed for uid: " + inDataSnapshot.getRef().toString());
-                                    Log.d(TAG, "removed at index: " + removeSpot);
                                 }
                             }
                             trackees.add(0, new TrackeeModel(inDataSnapshot.getRef().toString(), (String) inDataSnapshot.child("name").getValue(), (Double) inDataSnapshot.child("location").child("latitude").getValue(), (Double) inDataSnapshot.child("location").child("latitude").getValue(), new Date((long) inDataSnapshot.child("time").child("time").getValue())));
                             Log.d(TAG, "added for uid: " + inDataSnapshot.getRef().toString());
-                            if (removeSpot < 0) {
-//                                adapter.notifyItemRemoved(removeSpot);
-                                removeSpot = -1;
-                            }
+
                             adapter.notifyDataSetChanged();
 //                            adapter.notifyItemInserted(0);
 

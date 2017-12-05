@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +17,22 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.Date;
 
 
 public class CustomMapFragment extends Fragment implements OnMapReadyCallback {
+    private static final String TAG = "CustomMapFragment";
+
     private static final int MAP_PERMISSIONS = 1;
     Context context;
     MapView mapView;
@@ -29,7 +41,9 @@ public class CustomMapFragment extends Fragment implements OnMapReadyCallback {
     Button refreshButton;
     boolean networkPerm, gpsPerm;
     private FirebaseAuth mAuth;
-    private FirebaseUser user;
+    private FirebaseUser master;
+    private ArrayList<TrackeeModel> trackees;
+    private ArrayList<String> trackeeUIDs;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -38,30 +52,15 @@ public class CustomMapFragment extends Fragment implements OnMapReadyCallback {
         context = getActivity();
         View view = inflater.inflate(R.layout.fragment_map, container, false);
         mAuth = FirebaseAuth.getInstance();
-        user = mAuth.getCurrentUser();
-
+        master = mAuth.getCurrentUser();
+        FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+        final DatabaseReference myRef = mDatabase.getReference();
         mapView = view.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.onResume();
         mapView.getMapAsync(this);
-//        if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION)
-//                != PackageManager.PERMISSION_GRANTED) {
-//            // Check Permissions Now
-//            ActivityCompat.requestPermissions((MainActivity)context,
-//                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-//                    0);
-//        } else {
-//            gpsPerm=true;
-//        }
-//        if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION)
-//                != PackageManager.PERMISSION_GRANTED) {
-//            // Check Permissions Now
-//            ActivityCompat.requestPermissions((MainActivity)context,
-//                    new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},
-//                    1);
-//        } else {
-//            networkPerm = true;
-//        }
+        trackees = new ArrayList<TrackeeModel>();
+        trackeeUIDs = new ArrayList<String>();
         String[] perms = {"android.permission.ACCESS_COARSE_LOCATION", "android.permission.ACCESS_FINE_LOCATION"};
         requestPermissions(perms, MAP_PERMISSIONS);
 
@@ -89,12 +88,56 @@ public class CustomMapFragment extends Fragment implements OnMapReadyCallback {
                 }
             }
         });
+
+        myRef.child("users").child(master.getUid()).child("trackees").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                trackeeUIDs = (ArrayList<String>) dataSnapshot.getValue();
+
+                // System.out.println("td" + trackeeUIDs);
+                for (String uid : trackeeUIDs) {
+                    myRef.child("users").child(uid).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot inDataSnapshot) {
+                            for (int x = 0; x < trackees.size(); x++) {
+                                if (trackees.get(x).getUID().equals(inDataSnapshot.getRef().toString())) {
+                                    trackees.remove(x);
+                                    for (TrackeeModel t : trackees) {
+                                        Log.d(TAG, "after" + t.getUID());
+                                    }
+                                    Log.d(TAG, "removed for uid: " + inDataSnapshot.getRef().toString());
+                                }
+                            }
+                            trackees.add(0, new TrackeeModel(inDataSnapshot.getRef().toString(), (String) inDataSnapshot.child("name").getValue(), (Double) inDataSnapshot.child("location").child("latitude").getValue(), (Double) inDataSnapshot.child("location").child("longitude").getValue(), new Date((long) inDataSnapshot.child("time").child("time").getValue())));
+                            Log.d(TAG, "added for uid: " + inDataSnapshot.getRef().toString());
+                            //  Log.d(TAG, trackees.get(0).getLatitude() +"");
+                            map.addMarker(new MarkerOptions().position(new LatLng(trackees.get(0).getLatitude(), trackees.get(0).getLongitude())).title(trackees.get(0).getTrackeeName()));
+
+                            //adapter.notifyDataSetChanged();
+
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError error) {
+                            Log.w(TAG, "Failed to read value.", error.toException());
+                        }
+                    });
+                }
+                //  Log.d(TAG, "Value is: " + value);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
         return view;
     }
 
     @Override
     public void onRequestPermissionsResult(int permsRequestCode, String[] permissions, int[] grantResults) {
-
         switch (permsRequestCode) {
             case 1:
                 boolean coarseLocationAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
@@ -108,6 +151,7 @@ public class CustomMapFragment extends Fragment implements OnMapReadyCallback {
         map = googleMap;
         if (map != null) {
             map.getUiSettings().setMyLocationButtonEnabled(true);
+            map.addMarker(new MarkerOptions().position(new LatLng(43.1, -87.9)).title("Hello world"));
             //map.setMyLocationEnabled(true);
 
 //        try {
