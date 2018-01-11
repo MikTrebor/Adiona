@@ -9,10 +9,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 
 public class TrackeeMainActivity extends AppCompatActivity {
+    private static final String TAG = "TrackeeMainActivity";
 
     private static final int MAP_PERMISSIONS = 1;
     Fragment smartHomeFragment = new SmartHomeFragment();
@@ -43,6 +45,7 @@ public class TrackeeMainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.e(TAG, "onCreate");
 
 
         super.onCreate(savedInstanceState);
@@ -51,7 +54,7 @@ public class TrackeeMainActivity extends AppCompatActivity {
         String[] perms = {"android.permission.ACCESS_COARSE_LOCATION", "android.permission.ACCESS_FINE_LOCATION"};
         requestPermissions(perms, MAP_PERMISSIONS);
 
-        Intent intent = new Intent(getApplicationContext(), MyService.class);
+        Intent intent = new Intent(getApplicationContext(), GPSService.class);
         startService(intent);
 
         BottomNavigationView navigation = findViewById(R.id.navigation);

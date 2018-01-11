@@ -95,7 +95,27 @@ public class TrackeesFragment extends Fragment {
                                     Log.d(TAG, "removed for uid: " + inDataSnapshot.getRef().toString());
                                 }
                             }
-                            trackees.add(0, new TrackeeModel(inDataSnapshot.getRef().toString(), (String) inDataSnapshot.child("name").getValue(), (Double) inDataSnapshot.child("location").child("latitude").getValue(), (Double) inDataSnapshot.child("location").child("latitude").getValue(), new Date((long) inDataSnapshot.child("time").child("time").getValue())));
+                            //(uid, username, latitude, longitude, date
+                            //(string, string, double, double, Date)
+                            String dsUid = inDataSnapshot.getRef().toString();
+
+                            Object dsName1 = inDataSnapshot.child("name").getValue();
+                           /* Long dsLat1 = (Long) inDataSnapshot.child("location").child("latitude").getValue();
+                            Long dsLong1 = (Long) inDataSnapshot.child("location").child("longitude").getValue();
+                          */
+                            Long dsDate1 = (long) inDataSnapshot.child("time").child("time").getValue();
+
+                            String dsName = dsName1.toString();
+                           /* double dsLat = dsLat1.doubleValue();
+                            double dsLong = dsLong1.doubleValue();*/
+                            Date dsDate = new Date(dsDate1);
+
+
+                            Double dsLat = (Double) inDataSnapshot.child("location").child("latitude").getValue();
+                            Double dsLong = (Double) inDataSnapshot.child("location").child("longitude").getValue();
+
+
+                            trackees.add(0, new TrackeeModel(dsUid, dsName, dsLat, dsLong, dsDate));
                             Log.d(TAG, "added for uid: " + inDataSnapshot.getRef().toString());
 
                             adapter.notifyDataSetChanged();

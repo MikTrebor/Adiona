@@ -151,7 +151,7 @@ public class CustomMapFragment extends Fragment implements OnMapReadyCallback {
         map = googleMap;
         if (map != null) {
             map.getUiSettings().setMyLocationButtonEnabled(true);
-            map.addMarker(new MarkerOptions().position(new LatLng(43.1, -87.9)).title("Hello world"));
+            //   map.addMarker(new MarkerOptions().position(new LatLng(43.1, -87.9)).title("Hello world"));
             //map.setMyLocationEnabled(true);
 
 //        try {
