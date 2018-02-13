@@ -18,7 +18,7 @@ import java.util.Calendar;
 public class GPSService extends Service {
     private static final String TAG = "GPSService";
     private static final int MAP_PERMISSIONS = 1;
-    private static final long INTERVAL = 1000 * 60 * 1;
+    private static final long INTERVAL = 1000 * 1 * 1;
     Context context;
     GoogleMap map;
     GPSTracker gps;
@@ -62,7 +62,8 @@ public class GPSService extends Service {
                     myRef.child("users").child(user.getUid()).child("location").child("latitude").setValue(latitude);
                     myRef.child("users").child(user.getUid()).child("location").child("longitude").setValue(longitude);
                     myRef.child("users").child(user.getUid()).child("time").setValue(Calendar.getInstance().getTime());
-                    // \n is for new line
+
+                    Log.e(TAG, longitude + " " + latitude);
                 } else {
                     Log.e(TAG, "gps disabled");
                     gps.showSettingsAlert();

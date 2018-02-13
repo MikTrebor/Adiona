@@ -54,7 +54,7 @@ public class TrackeeMainActivity extends AppCompatActivity {
         String[] perms = {"android.permission.ACCESS_COARSE_LOCATION", "android.permission.ACCESS_FINE_LOCATION"};
         requestPermissions(perms, MAP_PERMISSIONS);
 
-        Intent intent = new Intent(getApplicationContext(), GPSService.class);
+        Intent intent = new Intent(getApplicationContext(), LocationService.class);
         startService(intent);
 
         BottomNavigationView navigation = findViewById(R.id.navigation);

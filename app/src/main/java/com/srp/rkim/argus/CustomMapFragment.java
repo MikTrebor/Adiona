@@ -93,9 +93,10 @@ public class CustomMapFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 trackeeUIDs = (ArrayList<String>) dataSnapshot.getValue();
-
                 // System.out.println("td" + trackeeUIDs);
                 for (String uid : trackeeUIDs) {
+
+                    map.clear();
                     myRef.child("users").child(uid).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot inDataSnapshot) {
@@ -105,15 +106,24 @@ public class CustomMapFragment extends Fragment implements OnMapReadyCallback {
                                     for (TrackeeModel t : trackees) {
                                         Log.d(TAG, "after" + t.getUID());
                                     }
+                                    Log.d(TAG, "trackee length" + trackees.size() + " " + trackeeUIDs.size());
                                     Log.d(TAG, "removed for uid: " + inDataSnapshot.getRef().toString());
                                 }
                             }
-                            trackees.add(0, new TrackeeModel(inDataSnapshot.getRef().toString(), (String) inDataSnapshot.child("name").getValue(), (Double) inDataSnapshot.child("location").child("latitude").getValue(), (Double) inDataSnapshot.child("location").child("longitude").getValue(), new Date((long) inDataSnapshot.child("time").child("time").getValue())));
-                            Log.d(TAG, "added for uid: " + inDataSnapshot.getRef().toString());
-                            //  Log.d(TAG, trackees.get(0).getLatitude() +"");
-                            map.addMarker(new MarkerOptions().position(new LatLng(trackees.get(0).getLatitude(), trackees.get(0).getLongitude())).title(trackees.get(0).getTrackeeName()));
+                            String dsUid = inDataSnapshot.getRef().toString();
 
-                            //adapter.notifyDataSetChanged();
+                            Object dsName1 = inDataSnapshot.child("name").getValue();
+
+                            Long dsDate1 = (long) inDataSnapshot.child("time").child("time").getValue();
+                            String dsName = dsName1.toString();
+                            Date dsDate = new Date(dsDate1);
+                            Double dsLat = (Double) inDataSnapshot.child("location").child("latitude").getValue();
+                            Double dsLong = (Double) inDataSnapshot.child("location").child("longitude").getValue();
+                            trackees.add(0, new TrackeeModel(dsUid, dsName, dsLat, dsLong, dsDate));
+                            Log.d(TAG, "added for uid: " + inDataSnapshot.getRef().toString());
+
+
+                            map.addMarker(new MarkerOptions().position(new LatLng(trackees.get(0).getLatitude(), trackees.get(0).getLongitude())).title(trackees.get(0).getTrackeeName()));
 
 
                         }
