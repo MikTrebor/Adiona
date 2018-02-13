@@ -96,10 +96,11 @@ public class CustomMapFragment extends Fragment implements OnMapReadyCallback {
                 // System.out.println("td" + trackeeUIDs);
                 for (String uid : trackeeUIDs) {
 
-                    map.clear();
+
                     myRef.child("users").child(uid).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot inDataSnapshot) {
+                            map.clear();
                             for (int x = 0; x < trackees.size(); x++) {
                                 if (trackees.get(x).getUID().equals(inDataSnapshot.getRef().toString())) {
                                     trackees.remove(x);
