@@ -17,6 +17,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,6 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 
 public class CustomMapFragment extends Fragment implements OnMapReadyCallback {
@@ -44,6 +46,7 @@ public class CustomMapFragment extends Fragment implements OnMapReadyCallback {
     private FirebaseUser master;
     private ArrayList<TrackeeModel> trackees;
     private ArrayList<String> trackeeUIDs;
+    private HashMap<String, Marker> mapMarkers;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -95,14 +98,16 @@ public class CustomMapFragment extends Fragment implements OnMapReadyCallback {
                 trackeeUIDs = (ArrayList<String>) dataSnapshot.getValue();
                 // System.out.println("td" + trackeeUIDs);
                 for (String uid : trackeeUIDs) {
-
-
+                    map.clear();
+                    mapMarkers = new HashMap<>();
                     myRef.child("users").child(uid).addValueEventListener(new ValueEventListener() {
                         @Override
-                        public void onDataChange(DataSnapshot inDataSnapshot) {
-                            map.clear();
+                        public void onDataChange(DataSnapshot inDataSnapshot) {//listener for each trackee (full acc)
                             for (int x = 0; x < trackees.size(); x++) {
                                 if (trackees.get(x).getUID().equals(inDataSnapshot.getRef().toString())) {
+                                    Marker markerRemove = mapMarkers.get(trackees.get(x).getUID());
+                                    markerRemove.remove();
+                                    mapMarkers.remove(trackees.get(x).getUID());
                                     trackees.remove(x);
                                     for (TrackeeModel t : trackees) {
                                         Log.d(TAG, "after" + t.getUID());
@@ -112,9 +117,7 @@ public class CustomMapFragment extends Fragment implements OnMapReadyCallback {
                                 }
                             }
                             String dsUid = inDataSnapshot.getRef().toString();
-
                             Object dsName1 = inDataSnapshot.child("name").getValue();
-
                             Long dsDate1 = (long) inDataSnapshot.child("time").child("time").getValue();
                             String dsName = dsName1.toString();
                             Date dsDate = new Date(dsDate1);
@@ -122,11 +125,8 @@ public class CustomMapFragment extends Fragment implements OnMapReadyCallback {
                             Double dsLong = (Double) inDataSnapshot.child("location").child("longitude").getValue();
                             trackees.add(0, new TrackeeModel(dsUid, dsName, dsLat, dsLong, dsDate));
                             Log.d(TAG, "added for uid: " + inDataSnapshot.getRef().toString());
-
-
-                            map.addMarker(new MarkerOptions().position(new LatLng(trackees.get(0).getLatitude(), trackees.get(0).getLongitude())).title(trackees.get(0).getTrackeeName()));
-
-
+                            Marker marker = map.addMarker(new MarkerOptions().position(new LatLng(trackees.get(0).getLatitude(), trackees.get(0).getLongitude())).title(trackees.get(0).getTrackeeName()));
+                            mapMarkers.put(inDataSnapshot.getRef().toString(), marker);
                         }
 
                         @Override

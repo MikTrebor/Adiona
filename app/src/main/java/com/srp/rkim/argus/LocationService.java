@@ -15,9 +15,11 @@ import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -40,6 +42,8 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     private FirebaseUser user;
     private GoogleApiClient mLocationClient;
     private Location mCurrentLocation;
+    private FusedLocationProviderClient mFusedLocationClient;
+
 
     @Override
     public IBinder onBind(Intent arg0) {
@@ -63,7 +67,6 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         mDatabase = FirebaseDatabase.getInstance();
         myRef = mDatabase.getReference();
 
-
         mLocationClient = new GoogleApiClient.Builder(LocationService.this)
                 .addApi(LocationServices.API).addConnectionCallbacks(LocationService.this)
                 .addOnConnectionFailedListener(LocationService.this).build();
@@ -74,6 +77,30 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
         mLocationRequest.setFastestInterval(INTERVAL);
         mLocationClient.connect();
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        try {
+            mFusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            // Got last known location. In some rare situations this can be null.
+                            if (location != null) {
+                                Log.e(TAG, "getLastLocation");
+                                mCurrentLocation = location;
+                                double latitude = mCurrentLocation.getLatitude();
+                                double longitude = mCurrentLocation.getLongitude();
+
+                                Log.e(TAG, "location: " + latitude + ", " + longitude);
+                                myRef.child("users").child(user.getUid()).child("location").child("latitude").setValue(latitude);
+                                myRef.child("users").child(user.getUid()).child("location").child("longitude").setValue(longitude);
+                                myRef.child("users").child(user.getUid()).child("time").setValue(Calendar.getInstance().getTime());
+                            }
+                        }
+                    });
+        } catch (java.lang.SecurityException ex) {
+            Log.i(TAG, "fail to request location update, ignore", ex);
+        }
     }
 
     @Override
@@ -82,6 +109,8 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         mCurrentLocation = location;
         double latitude = mCurrentLocation.getLatitude();
         double longitude = mCurrentLocation.getLongitude();
+
+        Log.e(TAG, "location: " + latitude + ", " + longitude);
         myRef.child("users").child(user.getUid()).child("location").child("latitude").setValue(latitude);
         myRef.child("users").child(user.getUid()).child("location").child("longitude").setValue(longitude);
         myRef.child("users").child(user.getUid()).child("time").setValue(Calendar.getInstance().getTime());
