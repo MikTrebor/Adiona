@@ -47,4 +47,9 @@
         <item name="android:textSize">36sp</item>
     </style>
 
+    <style name="SwitchCompatTheme">
+        <item name="colorSwitchThumbNormal">@color/grey_300</item>
+        <item name="android:colorForeground">@color/grey_100</item>
+        <item name="colorControlActivated">@color/grey_300</item>
+    </style>
 </resources>

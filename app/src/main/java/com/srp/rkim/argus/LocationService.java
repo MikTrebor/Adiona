@@ -70,15 +70,16 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         mLocationClient = new GoogleApiClient.Builder(LocationService.this)
                 .addApi(LocationServices.API).addConnectionCallbacks(LocationService.this)
                 .addOnConnectionFailedListener(LocationService.this).build();
+        mLocationClient.connect();
 
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(INTERVAL);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
         mLocationRequest.setFastestInterval(INTERVAL);
-        mLocationClient.connect();
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+
         try {
             mFusedLocationClient.getLastLocation()
                     .addOnSuccessListener(new OnSuccessListener<Location>() {

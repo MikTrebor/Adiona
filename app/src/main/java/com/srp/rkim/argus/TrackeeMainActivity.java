@@ -21,8 +21,7 @@ public class TrackeeMainActivity extends AppCompatActivity {
     Fragment settingsFragment = new SettingsFragment();
     FragmentManager fragmentManager = getFragmentManager();
     Context context;
-    GPSTracker gps;
-    //    GPSTracker gps;
+
     private TextView mTextMessage;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -67,7 +66,7 @@ public class TrackeeMainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int permsRequestCode, String[] permissions, int[] grantResults) {
 
         switch (permsRequestCode) {
-            case 1:
+            case MAP_PERMISSIONS:
                 boolean coarseLocationAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                 boolean fineLocationAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
                 break;

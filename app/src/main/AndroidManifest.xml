@@ -40,7 +40,6 @@
             android:label="@string/title_activity_trackee_main" />
 
         <service android:name="com.srp.rkim.argus.LocationService" />
-        <service android:name="com.srp.rkim.argus.GPSService" />
 
     </application>
 

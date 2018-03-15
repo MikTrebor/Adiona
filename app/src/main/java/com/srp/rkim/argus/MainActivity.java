@@ -3,7 +3,6 @@ package com.srp.rkim.argus;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,26 +12,22 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+
 
     private static final int MAP_PERMISSIONS = 1;
     Fragment trackeesFragment = new TrackeesFragment();
     Fragment customMapFragment = new CustomMapFragment();
-    Fragment mMapFragment = MapFragment.newInstance();
     Fragment smartHomeFragment = new SmartHomeFragment();
     Fragment settingsFragment = new SettingsFragment();
     FragmentManager fragmentManager = getFragmentManager();
     Context context;
-    GPSTracker gps;
-    private TextView mTextMessage;
     private TextView mDebugMessage;
     private FirebaseAuth mAuth;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -43,25 +38,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             switch (item.getItemId()) {
                 case R.id.navigation_trackees:
                     fragmentManager.beginTransaction().replace(R.id.content, trackeesFragment).commit();
-                    //mTextMessage.setText(R.string.title_trackees);
                     return true;
                 case R.id.navigation_map:
                     fragmentManager.beginTransaction().replace(R.id.content, customMapFragment).commit();
-                    // fragmentManager.beginTransaction().replace(R.id.content, mMapFragment).commit();
-                    //mTextMessage.setText(R.string.title_map);
                     return true;
                 case R.id.navigation_smarthome:
                     fragmentManager.beginTransaction().replace(R.id.content, smartHomeFragment).commit();
-                    //mTextMessage.setText(R.string.title_smarthome);
                     return true;
                 case R.id.navigation_settings:
                     fragmentManager.beginTransaction().replace(R.id.content, settingsFragment).commit();
-                    //mTextMessage.setText(R.string.title_settings);
                     return true;
             }
             return false;
         }
-
     };
 
     //MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
@@ -81,16 +70,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mAuth = FirebaseAuth.getInstance();
         String[] perms = {"android.permission.ACCESS_COARSE_LOCATION", "android.permission.ACCESS_FINE_LOCATION"};
         requestPermissions(perms, MAP_PERMISSIONS);
-        Intent intent = new Intent(getApplicationContext(), MyService.class);
-        // stopService(intent);
 
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        // DatabaseReference myRef = database.getReference("users");
-
-
-//        mTextMessage = (TextView) findViewById(R.id.message);
-//        mDebugMessage = (TextView) findViewById(R.id.debug);
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         fragmentManager.beginTransaction().replace(R.id.content, trackeesFragment).commit();
@@ -107,12 +87,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 break;
         }
     }
+
     @Override
     public void onMapReady(GoogleMap map) {
         map.addMarker(new MarkerOptions()
                 .position(new LatLng(0, 0))
                 .title("Marker"));
     }
+
     private void updateUI(FirebaseUser user) {
 //        hideProgressDialog();
         if (user != null) {

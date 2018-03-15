@@ -119,4 +119,19 @@
     <string name="add_trackee">Add Trackee</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
+    <string name="boundary_settings">Boundary Settings</string>
+    <string name="boundary_type">Boundary Type</string>
+    <string name="quad">Quad</string>
+    <string name="circle">Circle</string>
+    <string name="center">Center: </string>
+    <string name="radius">Radius: </string>
+    <string name="latitude">Latitude</string>
+    <string name="longitude">Longitude</string>
+    <string name="feet">feet</string>
+    <string name="point_1">Point 1:</string>
+    <string name="point_2">Point 2:</string>
+    <string name="point_3">Point 3:</string>
+    <string name="point_4">Point 4:</string>
+    <string name="trackee_name">Name: </string>
+
 </resources>

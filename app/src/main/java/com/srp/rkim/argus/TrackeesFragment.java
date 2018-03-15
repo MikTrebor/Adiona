@@ -25,101 +25,80 @@ import java.util.Date;
 public class TrackeesFragment extends Fragment {
     private static final String TAG = "TrackeesFragment";
     Context context;
-    private FirebaseAuth masterAuth;
-    private FirebaseAuth trackeeAuth;
-    private FirebaseUser master;
+    private FirebaseAuth mAuth;
+    private FirebaseUser user;
     private ArrayList<TrackeeModel> trackees;
     private ArrayList<String> trackeeUIDs;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_trackees, container, false);
-
+        context = getActivity();
         RecyclerView rTrackees = view.findViewById(R.id.trackee_recycler_view);
-        masterAuth = FirebaseAuth.getInstance();
-        master = masterAuth.getCurrentUser();
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference myRef = mDatabase.getReference();
         Log.d(TAG, "onCreateView: " + myRef.toString());
 
         trackees = new ArrayList<TrackeeModel>();
         trackeeUIDs = new ArrayList<String>();
-        //  trackees.add(new TrackeeModel("Bob", 111, 112, Calendar.getInstance().getTime()));
 
         final TrackeeAdapter adapter = new TrackeeAdapter(context, trackees);
         rTrackees.setAdapter(adapter);
         rTrackees.setLayoutManager(new LinearLayoutManager(context));
 
-//        myRef.child("users").child(master.getUid()).child("trackees").addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                trackeeUIDs = (ArrayList<String>) dataSnapshot.getValue();
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                Log.w(TAG, "Failed to read value.", databaseError.toException());
-//
-//            }
-//        });
-
-
-        myRef.child("users").child(master.getUid()).child("trackees").addValueEventListener(new ValueEventListener() {
+        myRef.child("users").child(user.getUid()).child("trackees").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 trackeeUIDs = (ArrayList<String>) dataSnapshot.getValue();
                 System.out.println("td" + trackeeUIDs);
-
                 for (String uid : trackeeUIDs) {
+                    final String myUid = uid;
                     myRef.child("users").child(uid).addValueEventListener(new ValueEventListener() {
                         @Override
-                        public void onDataChange(DataSnapshot inDataSnapshot) {
-                            //inDataSnapshot.child("location").getValue();
-                            //inDataSnapshot.child("time").getValue();
-                            for (TrackeeModel t : trackees) {
-                                Log.d(TAG, trackees.size() + "before" + t.getUID());
-                            }
-                            //t.add(0, new Contact("Barney", true));
-                            for (int x = 0; x < trackees.size(); x++) {
-                                Log.d(TAG, "first:" + trackees.get(x).getUID());
-                                Log.d(TAG, "second:" + inDataSnapshot.getRef().toString());
+                        public void onDataChange(final DataSnapshot inDataSnapshot) {
+                            myRef.child("users").child(user.getUid()).child("trackeedata").child(myUid).addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot inInDataSnapshot) {
+                                    //     Log.e(TAG, "value " + inInDataSnapshot.toString());
 
-                                if (trackees.get(x).getUID().equals(inDataSnapshot.getRef().toString())) {
-                                    trackees.remove(x);
                                     for (TrackeeModel t : trackees) {
-                                        Log.d(TAG, "after" + t.getUID());
+                                        Log.e(TAG, trackees.size() + "before" + t.getUID());
                                     }
-                                    Log.d(TAG, "removed for uid: " + inDataSnapshot.getRef().toString());
+                                    for (int x = 0; x < trackees.size(); x++) {
+                                        Log.e(TAG, "first:" + trackees.get(x).getUID());
+                                        Log.e(TAG, "second:" + myUid);
+                                        if (trackees.get(x).getUID().equals(myUid)) {
+                                            trackees.remove(x);
+                                            for (TrackeeModel t : trackees) {
+                                                Log.e(TAG, "after" + t.getUID());
+                                            }
+                                            Log.e(TAG, "removed for uid: " + inDataSnapshot.getRef().toString());
+                                        }
+                                    }
+
+                                    Object dsName1 = inInDataSnapshot.child("name").getValue();
+                                    String dsName = dsName1.toString();
+                                    Long dsDate1 = (long) inDataSnapshot.child("time").child("time").getValue();
+
+                                    Date dsDate = new Date(dsDate1);
+
+                                    Double dsLat = (Double) inDataSnapshot.child("location").child("latitude").getValue();
+                                    Double dsLong = (Double) inDataSnapshot.child("location").child("longitude").getValue();
+
+                                    trackees.add(0, new TrackeeModel(myUid, dsName, dsLat, dsLong, dsDate));
+                                    Log.d(TAG, "added for uid: " + inDataSnapshot.getRef().toString());
+
+                                    adapter.notifyDataSetChanged();
                                 }
-                            }
-                            //(uid, username, latitude, longitude, date
-                            //(string, string, double, double, Date)
-                            String dsUid = inDataSnapshot.getRef().toString();
 
-                            Object dsName1 = inDataSnapshot.child("name").getValue();
-                           /* Long dsLat1 = (Long) inDataSnapshot.child("location").child("latitude").getValue();
-                            Long dsLong1 = (Long) inDataSnapshot.child("location").child("longitude").getValue();
-                          */
-                            Long dsDate1 = (long) inDataSnapshot.child("time").child("time").getValue();
+                                @Override
+                                public void onCancelled(DatabaseError error) {
+                                    Log.w(TAG, "Failed to read value.", error.toException());
+                                }
+                            });
 
-                            String dsName = dsName1.toString();
-                           /* double dsLat = dsLat1.doubleValue();
-                            double dsLong = dsLong1.doubleValue();*/
-                            Date dsDate = new Date(dsDate1);
-
-
-                            Double dsLat = (Double) inDataSnapshot.child("location").child("latitude").getValue();
-                            Double dsLong = (Double) inDataSnapshot.child("location").child("longitude").getValue();
-
-
-                            trackees.add(0, new TrackeeModel(dsUid, dsName, dsLat, dsLong, dsDate));
-                            Log.d(TAG, "added for uid: " + inDataSnapshot.getRef().toString());
-
-                            adapter.notifyDataSetChanged();
-//                            adapter.notifyItemInserted(0);
 
                         }
 
@@ -129,7 +108,6 @@ public class TrackeesFragment extends Fragment {
                         }
                     });
                 }
-                //  Log.d(TAG, "Value is: " + value);
             }
 
             @Override
@@ -139,9 +117,6 @@ public class TrackeesFragment extends Fragment {
             }
         });
 
-
         return view;
     }
-
-
 }
