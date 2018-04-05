@@ -127,6 +127,8 @@ public class CustomMapFragment extends Fragment implements OnMapReadyCallback {
                             Log.d(TAG, "added for uid: " + inDataSnapshot.getRef().toString());
                             Marker marker = map.addMarker(new MarkerOptions().position(new LatLng(trackees.get(0).getLatitude(), trackees.get(0).getLongitude())).title(trackees.get(0).getTrackeeName()));
                             mapMarkers.put(inDataSnapshot.getRef().toString(), marker);
+
+
                         }
 
                         @Override

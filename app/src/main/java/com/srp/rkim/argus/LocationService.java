@@ -115,6 +115,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         myRef.child("users").child(user.getUid()).child("location").child("latitude").setValue(latitude);
         myRef.child("users").child(user.getUid()).child("location").child("longitude").setValue(longitude);
         myRef.child("users").child(user.getUid()).child("time").setValue(Calendar.getInstance().getTime());
+
     }
 
     @Override

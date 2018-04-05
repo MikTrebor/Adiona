@@ -52,7 +52,7 @@ public class TrackeesFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 trackeeUIDs = (ArrayList<String>) dataSnapshot.getValue();
-                System.out.println("td" + trackeeUIDs);
+                // System.out.println("td" + trackeeUIDs);
                 for (String uid : trackeeUIDs) {
                     final String myUid = uid;
                     myRef.child("users").child(uid).addValueEventListener(new ValueEventListener() {
@@ -64,17 +64,17 @@ public class TrackeesFragment extends Fragment {
                                     //     Log.e(TAG, "value " + inInDataSnapshot.toString());
 
                                     for (TrackeeModel t : trackees) {
-                                        Log.e(TAG, trackees.size() + "before" + t.getUID());
+                                        // Log.e(TAG, trackees.size() + "before" + t.getUID());
                                     }
                                     for (int x = 0; x < trackees.size(); x++) {
-                                        Log.e(TAG, "first:" + trackees.get(x).getUID());
-                                        Log.e(TAG, "second:" + myUid);
+                                        //   Log.e(TAG, "first:" + trackees.get(x).getUID());
+                                        // Log.e(TAG, "second:" + myUid);
                                         if (trackees.get(x).getUID().equals(myUid)) {
                                             trackees.remove(x);
                                             for (TrackeeModel t : trackees) {
-                                                Log.e(TAG, "after" + t.getUID());
+                                                //     Log.e(TAG, "after" + t.getUID());
                                             }
-                                            Log.e(TAG, "removed for uid: " + inDataSnapshot.getRef().toString());
+                                            //    Log.e(TAG, "removed for uid: " + inDataSnapshot.getRef().toString());
                                         }
                                     }
 
@@ -88,7 +88,7 @@ public class TrackeesFragment extends Fragment {
                                     Double dsLong = (Double) inDataSnapshot.child("location").child("longitude").getValue();
 
                                     trackees.add(0, new TrackeeModel(myUid, dsName, dsLat, dsLong, dsDate));
-                                    Log.d(TAG, "added for uid: " + inDataSnapshot.getRef().toString());
+                                    //  Log.d(TAG, "added for uid: " + inDataSnapshot.getRef().toString());
 
                                     adapter.notifyDataSetChanged();
                                 }

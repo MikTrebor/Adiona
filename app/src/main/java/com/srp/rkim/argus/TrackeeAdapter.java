@@ -111,8 +111,28 @@ public class TrackeeAdapter extends
                 final EditText mQuadFourLatitude = boundariesView.findViewById(R.id.quad_4_latitude);
                 final EditText mQuadFourLongitude = boundariesView.findViewById(R.id.quad_4_longitude);
 
+                final RadioGroup mBoundTypeGroup = boundariesView.findViewById(R.id.bound_type);
 
-                RadioGroup mBoundTypeGroup = boundariesView.findViewById(R.id.bound_type);
+                myRef.child("users").child(user.getUid()).child("trackeedata").child(trackee.getUID()).child("type").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        String type = dataSnapshot.getValue().toString();
+                        if (type.equals("quad")) {
+                            mBoundTypeGroup.check(R.id.quad_button);
+                            mCircleData.setVisibility(View.GONE);
+                            mQuadData.setVisibility(View.VISIBLE);
+                        } else if (type.equals("circle")) {
+                            mBoundTypeGroup.check(R.id.circle_button);
+                            mQuadData.setVisibility(View.GONE);
+                            mCircleData.setVisibility(View.VISIBLE);
+                        }
+                    }
+
+                    public void onCancelled(DatabaseError error) {
+                        Log.w(TAG, "Failed to read value.", error.toException());
+                    }
+                });
+
                 mBoundTypeGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -120,9 +140,13 @@ public class TrackeeAdapter extends
                         if (checkedId == R.id.quad_button) {
                             mCircleData.setVisibility(View.GONE);
                             mQuadData.setVisibility(View.VISIBLE);
+                            myRef.child("users").child(user.getUid()).child("trackeedata").child(trackee.getUID()).child("type").setValue("quad");
+
                         } else if (checkedId == R.id.circle_button) {
                             mQuadData.setVisibility(View.GONE);
                             mCircleData.setVisibility(View.VISIBLE);
+                            myRef.child("users").child(user.getUid()).child("trackeedata").child(trackee.getUID()).child("type").setValue("circle");
+
                         }
                     }
                 });
@@ -160,21 +184,21 @@ public class TrackeeAdapter extends
                                     public void onClick(DialogInterface dialog, int id) {
 
                                         myRef.child("users").child(user.getUid()).child("trackeedata").child(trackee.getUID()).child("name").setValue(mTrackeeName.getText().toString());
-                                        myRef.child("users").child(user.getUid()).child("trackeedata").child(trackee.getUID()).child("boundary").child("circle").child("center").child("latitude").setValue(Integer.parseInt(mCircleLatitude.getText().toString()));
-                                        myRef.child("users").child(user.getUid()).child("trackeedata").child(trackee.getUID()).child("boundary").child("circle").child("center").child("longitude").setValue(Integer.parseInt(mCircleLongitude.getText().toString()));
-                                        myRef.child("users").child(user.getUid()).child("trackeedata").child(trackee.getUID()).child("boundary").child("circle").child("radius").setValue(Integer.parseInt(mCircleRadius.getText().toString()));
+                                        myRef.child("users").child(user.getUid()).child("trackeedata").child(trackee.getUID()).child("boundary").child("circle").child("center").child("latitude").setValue(Double.parseDouble(mCircleLatitude.getText().toString()));
+                                        myRef.child("users").child(user.getUid()).child("trackeedata").child(trackee.getUID()).child("boundary").child("circle").child("center").child("longitude").setValue(Double.parseDouble(mCircleLongitude.getText().toString()));
+                                        myRef.child("users").child(user.getUid()).child("trackeedata").child(trackee.getUID()).child("boundary").child("circle").child("radius").setValue(Double.parseDouble(mCircleRadius.getText().toString()));
 
-                                        myRef.child("users").child(user.getUid()).child("trackeedata").child(trackee.getUID()).child("boundary").child("quad").child("0").child("latitude").setValue(Integer.parseInt(mQuadOneLatitude.getText().toString()));
-                                        myRef.child("users").child(user.getUid()).child("trackeedata").child(trackee.getUID()).child("boundary").child("quad").child("0").child("longitude").setValue(Integer.parseInt(mQuadOneLongitude.getText().toString()));
+                                        myRef.child("users").child(user.getUid()).child("trackeedata").child(trackee.getUID()).child("boundary").child("quad").child("0").child("latitude").setValue(Double.parseDouble(mQuadOneLatitude.getText().toString()));
+                                        myRef.child("users").child(user.getUid()).child("trackeedata").child(trackee.getUID()).child("boundary").child("quad").child("0").child("longitude").setValue(Double.parseDouble(mQuadOneLongitude.getText().toString()));
 
-                                        myRef.child("users").child(user.getUid()).child("trackeedata").child(trackee.getUID()).child("boundary").child("quad").child("1").child("latitude").setValue(Integer.parseInt(mQuadTwoLatitude.getText().toString()));
-                                        myRef.child("users").child(user.getUid()).child("trackeedata").child(trackee.getUID()).child("boundary").child("quad").child("1").child("longitude").setValue(Integer.parseInt(mQuadTwoLongitude.getText().toString()));
+                                        myRef.child("users").child(user.getUid()).child("trackeedata").child(trackee.getUID()).child("boundary").child("quad").child("1").child("latitude").setValue(Double.parseDouble(mQuadTwoLatitude.getText().toString()));
+                                        myRef.child("users").child(user.getUid()).child("trackeedata").child(trackee.getUID()).child("boundary").child("quad").child("1").child("longitude").setValue(Double.parseDouble(mQuadTwoLongitude.getText().toString()));
 
-                                        myRef.child("users").child(user.getUid()).child("trackeedata").child(trackee.getUID()).child("boundary").child("quad").child("2").child("latitude").setValue(Integer.parseInt(mQuadThreeLatitude.getText().toString()));
-                                        myRef.child("users").child(user.getUid()).child("trackeedata").child(trackee.getUID()).child("boundary").child("quad").child("2").child("longitude").setValue(Integer.parseInt(mQuadThreeLongitude.getText().toString()));
+                                        myRef.child("users").child(user.getUid()).child("trackeedata").child(trackee.getUID()).child("boundary").child("quad").child("2").child("latitude").setValue(Double.parseDouble(mQuadThreeLatitude.getText().toString()));
+                                        myRef.child("users").child(user.getUid()).child("trackeedata").child(trackee.getUID()).child("boundary").child("quad").child("2").child("longitude").setValue(Double.parseDouble(mQuadThreeLongitude.getText().toString()));
 
-                                        myRef.child("users").child(user.getUid()).child("trackeedata").child(trackee.getUID()).child("boundary").child("quad").child("3").child("latitude").setValue(Integer.parseInt(mQuadFourLatitude.getText().toString()));
-                                        myRef.child("users").child(user.getUid()).child("trackeedata").child(trackee.getUID()).child("boundary").child("quad").child("3").child("longitude").setValue(Integer.parseInt(mQuadFourLongitude.getText().toString()));
+                                        myRef.child("users").child(user.getUid()).child("trackeedata").child(trackee.getUID()).child("boundary").child("quad").child("3").child("latitude").setValue(Double.parseDouble(mQuadFourLatitude.getText().toString()));
+                                        myRef.child("users").child(user.getUid()).child("trackeedata").child(trackee.getUID()).child("boundary").child("quad").child("3").child("longitude").setValue(Double.parseDouble(mQuadFourLongitude.getText().toString()));
 
 
 //                                        // get user input and set it to result
